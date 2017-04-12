@@ -2,7 +2,8 @@
 /*
     Project includes
 */
-
+#include "engine\graphics.h"
+#include "engine\stb_image.h"
 
 /*
     Libs include
@@ -27,7 +28,87 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 
-LRESULT CALLBACK WndProc(HWND hWnd, UINT hMsg, WPARAM wParam, LPARAM lParam)
+typedef struct offscreen_buffer_t
+{
+    BITMAPINFO Info;
+    void *Memory;
+
+    int Width;
+    int Height;
+
+    int Pitch;
+    int BytesPerPixel;
+} offscreen_buffer_t;
+
+typedef struct  window_dimensions_t
+{
+    int Width;
+    int Height;
+} window_dimensions_t;
+
+///////////////////////////////////////////////////////////////////////////////
+
+static offscreen_buffer_t GlobalBackBuffer = { 0 };
+
+///////////////////////////////////////////////////////////////////////////////
+
+static window_dimensions_t GetWindowDimension(HWND Window)
+{
+    RECT ClientRect = { 0 };
+    GetClientRect(Window, &ClientRect);
+
+    window_dimensions_t r = { 0 };
+    r.Width = ClientRect.right - ClientRect.left;
+    r.Height = ClientRect.bottom - ClientRect.top;
+
+    return r;
+}
+
+
+static void ResizeBIBSection(offscreen_buffer_t *Buffer, int Width, int Height)
+{
+    Buffer->Info.bmiHeader.biSize = sizeof(Buffer->Info.bmiHeader);
+    Buffer->Info.bmiHeader.biHeight = -Height;
+    Buffer->Info.bmiHeader.biWidth = Width;
+
+    Buffer->Info.bmiHeader.biCompression = BI_RGB;
+    Buffer->Info.bmiHeader.biBitCount = 32;
+    Buffer->Info.bmiHeader.biPlanes = 1;
+
+    Buffer->Height = Height;
+    Buffer->Width = Width;
+
+    Buffer->Pitch = Width * 4;
+    Buffer->BytesPerPixel = 4;
+
+    size_t BitmapMemorySize = (size_t)(4 * Width * Height);
+    if (Buffer->Memory != NULL) VirtualFree(Buffer->Memory, 0, MEM_RELEASE);
+    Buffer->Memory = VirtualAlloc(0, BitmapMemorySize, MEM_RESERVE | MEM_COMMIT, PAGE_READWRITE);
+}
+
+static void DisplayBuffer(offscreen_buffer_t *Buffer, HDC DeviceContext, int WindowWidth, int WindowHeight)
+{
+    int  OffsetX = 0, OffsetY = 0;
+
+    PatBlt(DeviceContext, 0, 0, WindowWidth, OffsetY, BLACKNESS);
+    PatBlt(DeviceContext, 0, OffsetY + Buffer->Height, WindowWidth, WindowHeight, BLACKNESS);
+
+    PatBlt(DeviceContext, 0, 0, OffsetX, WindowHeight, BLACKNESS);
+    PatBlt(DeviceContext, OffsetX + Buffer->Width, 0, WindowWidth, WindowHeight, BLACKNESS);
+
+    StretchDIBits
+    (
+        DeviceContext,
+
+        OffsetX, OffsetY, Buffer->Width, Buffer->Height,
+        0, 0, Buffer->Width, Buffer->Height,
+
+        Buffer->Memory, &Buffer->Info,
+        DIB_RGB_COLORS, SRCCOPY
+    );
+}
+
+static LRESULT CALLBACK WndProc(HWND hWnd, UINT hMsg, WPARAM wParam, LPARAM lParam)
 {
     if (hMsg == WM_CLOSE)
     {
@@ -38,6 +119,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT hMsg, WPARAM wParam, LPARAM lParam)
     {
         PostQuitMessage(EXIT_SUCCESS);
         return 0;
+    }
+    else if (hMsg == WM_PAINT)
+    {
+        PAINTSTRUCT Paint = { 0 };
+        HDC DeviceContext = BeginPaint(hWnd, &Paint);
+
+        window_dimensions_t d = GetWindowDimension(hWnd);
+        ResizeBIBSection(&GlobalBackBuffer, d.Width, d.Height);
+        DisplayBuffer(&GlobalBackBuffer, DeviceContext, d.Width, d.Height);
+
+        EndPaint(hWnd, &Paint);
     }
 
     return DefWindowProcA(hWnd, hMsg, wParam, lParam);
@@ -86,7 +178,18 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
 
     ShowWindow(hWnd, SW_SHOW);
     UpdateWindow(hWnd);
+
+    HDC DeviceContext = GetDC(hWnd);
     MSG hMsg = { 0 };
+
+    bitmap_t bmp_tree = { 0 };
+    bitmap_t bmp_sun = { 0 };
+
+    bmp_tree.Memory = stbi_load("..\\assets\\tree2.png", &bmp_tree.Width, &bmp_tree.Height, &bmp_tree.BytesPerPixel, 0);
+    bmp_tree.Pitch = bmp_tree.Width * bmp_tree.BytesPerPixel;
+
+    bmp_sun.Memory = stbi_load("..\\assets\\sun.png", &bmp_sun.Width, &bmp_sun.Height, &bmp_sun.BytesPerPixel, 0);
+    bmp_sun.Pitch = bmp_sun.Width * bmp_sun.BytesPerPixel;
 
     while (hMsg.message != WM_QUIT)
     {
@@ -96,7 +199,27 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
             DispatchMessageA(&hMsg);
         }
 
+        window_dimensions_t WndDimensions = GetWindowDimension(hWnd);
+        game_offscreen_buffer_t GameBuffer = { 0 };
+
+        GameBuffer.Memory = GlobalBackBuffer.Memory;
+        GameBuffer.BytesPerPixel = GlobalBackBuffer.BytesPerPixel;
+
+        GameBuffer.Height= GlobalBackBuffer.Height;
+        GameBuffer.Width = GlobalBackBuffer.Width;
+        GameBuffer.Pitch = GlobalBackBuffer.Pitch;
+
+        CGraphicsManager::ClearBuffer(&GameBuffer, 0.0f, 0.0f, 0.0f);
+
+        CGraphicsManager::DrawBitmap(&GameBuffer, &bmp_tree, 100.0f, 100.0f);
+        CGraphicsManager::DrawBitmap(&GameBuffer, &bmp_sun, 700.0f, 0.0f);
+
+        DisplayBuffer(&GlobalBackBuffer, DeviceContext, WndDimensions.Width, WndDimensions.Height);
+
     }
+
+    stbi_image_free(bmp_tree.Memory);
+    stbi_image_free(bmp_sun.Memory);
 
     UnregisterClassA(CLASS_NAME, wndCls.hInstance);
     return EXIT_SUCCESS;
