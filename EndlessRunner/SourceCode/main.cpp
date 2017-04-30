@@ -3,6 +3,7 @@
     Project includes
 */
 #include "engine\graphics.h"
+#include "engine\animation.h"
 #include "engine\stb_image.h"
 
 /*
@@ -108,6 +109,16 @@ static void DisplayBuffer(offscreen_buffer_t *Buffer, HDC DeviceContext, int Win
     );
 }
 
+float seconds_now()
+{
+    static LARGE_INTEGER s_frequency = { 0 };
+    static BOOL s_use_qpc = QueryPerformanceFrequency(&s_frequency);
+
+    LARGE_INTEGER now = { 0 };
+    QueryPerformanceCounter(&now);
+    return (float) ((double)now.QuadPart / (double)s_frequency.QuadPart);
+}
+
 static LRESULT CALLBACK WndProc(HWND hWnd, UINT hMsg, WPARAM wParam, LPARAM lParam)
 {
     if (hMsg == WM_CLOSE)
@@ -191,8 +202,32 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
     bmp_sun.Memory = stbi_load("..\\assets\\sun.png", &bmp_sun.Width, &bmp_sun.Height, &bmp_sun.BytesPerPixel, 0);
     bmp_sun.Pitch = bmp_sun.Width * bmp_sun.BytesPerPixel;
 
+    std::vector<animation_frame_t> frames;
+    animation_frame_t frame = { 0 };
+
+    for (int i = 0; i < 5; ++i)
+    {
+        char s[256] = { 0 };
+        sprintf_s(s, "..\\assets\\run_anim%d.png", i + 1);
+
+        frame.bitmap.Memory = (stbi_load(s, &frame.bitmap.Width, &frame.bitmap.Height, &frame.bitmap.BytesPerPixel, 0));
+        frame.bitmap.Pitch = frame.bitmap.Width * frame.bitmap.BytesPerPixel;
+        frame.duration = 0.12f;
+
+        frames.push_back(frame);
+    }
+
+    CGraphicsManager graphics_manager;
+    CAnimation player_animation(frames);
+
+    float current_frame_time = 0.0f;
+    float last_frame_time = seconds_now();
+
     while (hMsg.message != WM_QUIT)
     {
+        current_frame_time = seconds_now();
+        float dt = current_frame_time - last_frame_time;
+
         while (PeekMessage(&hMsg, NULL, 0U, 0U, PM_REMOVE) > 0)
         {
             TranslateMessage(&hMsg);
@@ -214,12 +249,19 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
         CGraphicsManager::DrawBitmap(&GameBuffer, &bmp_tree, 100.0f, 100.0f);
         CGraphicsManager::DrawBitmap(&GameBuffer, &bmp_sun, 700.0f, 0.0f);
 
+        player_animation.Update(dt);
+        player_animation.Render(&graphics_manager, &GameBuffer, 700.0f, 200.0f);
+
         DisplayBuffer(&GlobalBackBuffer, DeviceContext, WndDimensions.Width, WndDimensions.Height);
+        last_frame_time = current_frame_time;
 
     }
 
     stbi_image_free(bmp_tree.Memory);
     stbi_image_free(bmp_sun.Memory);
+
+    for (size_t i = 0; i < frames.size(); ++i) stbi_image_free(frames[i].bitmap.Memory);
+    frames.clear();
 
     UnregisterClassA(CLASS_NAME, wndCls.hInstance);
     return EXIT_SUCCESS;

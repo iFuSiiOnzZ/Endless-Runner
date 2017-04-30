@@ -154,11 +154,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="SourceCode\engine\animation.cpp" />
     <ClCompile Include="SourceCode\engine\graphics.cpp" />
     <ClCompile Include="SourceCode\engine\stb_image.cpp" />
     <ClCompile Include="SourceCode\main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="SourceCode\engine\animation.h" />
     <ClInclude Include="SourceCode\engine\graphics.h" />
     <ClInclude Include="SourceCode\engine\stb_image.h" />
   </ItemGroup>
