@@ -6,6 +6,8 @@
 #include "engine\animation.h"
 #include "engine\stb_image.h"
 
+#include "game\Utils\ResourceManager.h"
+
 /*
     Libs include
 */
@@ -205,6 +207,14 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
     std::vector<animation_frame_t> frames;
     animation_frame_t frame = { 0 };
 
+    CResourceManager *r = CResourceManager::GetInstance();
+    r->Register<bitmap_t>();
+    r->Add<bitmap_t>("tree", &bmp_tree);
+    r->Add<bitmap_t>("sun", &bmp_sun);
+
+    bitmap_t *t = r->Get<bitmap_t>("tree");
+    bitmap_t *e = r->Get<bitmap_t>("treeeee");
+
     for (int i = 0; i < 5; ++i)
     {
         char s[256] = { 0 };
@@ -222,6 +232,7 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
 
     float current_frame_time = 0.0f;
     float last_frame_time = seconds_now();
+    float fix_frame_time = 1.0f / 60.0f;
 
     while (hMsg.message != WM_QUIT)
     {
@@ -232,6 +243,13 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
         {
             TranslateMessage(&hMsg);
             DispatchMessageA(&hMsg);
+        }
+
+        while (dt > 0.0f)
+        {
+            float delta_time = (dt < fix_frame_time) ? dt : fix_frame_time;
+            player_animation.Update(delta_time);
+            dt -= fix_frame_time;
         }
 
         window_dimensions_t WndDimensions = GetWindowDimension(hWnd);
@@ -249,12 +267,10 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
         CGraphicsManager::DrawBitmap(&GameBuffer, &bmp_tree, 100.0f, 100.0f);
         CGraphicsManager::DrawBitmap(&GameBuffer, &bmp_sun, 700.0f, 0.0f);
 
-        player_animation.Update(dt);
         player_animation.Render(&graphics_manager, &GameBuffer, 700.0f, 200.0f);
 
         DisplayBuffer(&GlobalBackBuffer, DeviceContext, WndDimensions.Width, WndDimensions.Height);
         last_frame_time = current_frame_time;
-
     }
 
     stbi_image_free(bmp_tree.Memory);
@@ -263,6 +279,7 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
     for (size_t i = 0; i < frames.size(); ++i) stbi_image_free(frames[i].bitmap.Memory);
     frames.clear();
 
+    CResourceManager::Destroy();
     UnregisterClassA(CLASS_NAME, wndCls.hInstance);
     return EXIT_SUCCESS;
 }
