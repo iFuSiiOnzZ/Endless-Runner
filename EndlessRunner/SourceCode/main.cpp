@@ -2,11 +2,11 @@
 /*
     Project includes
 */
-#include "engine\graphics.h"
-#include "engine\animation.h"
-#include "engine\stb_image.h"
 
-#include "engine\ResourceManager.h"
+#include "engine\animation.h"
+
+
+#include "engine\resource_manager.h"
 
 #include "game\utils\ContentLoader.h"
 
@@ -54,6 +54,7 @@ typedef struct  window_dimensions_t
 ///////////////////////////////////////////////////////////////////////////////
 
 static offscreen_buffer_t GlobalBackBuffer = { 0 };
+static bool GlobalExit = false;
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -128,6 +129,7 @@ static LRESULT CALLBACK WndProc(HWND hWnd, UINT hMsg, WPARAM wParam, LPARAM lPar
     if (hMsg == WM_CLOSE)
     {
         DestroyWindow(hWnd);
+        GlobalExit = true;
         return 0;
     }
     else if (hMsg == WM_DESTROY)
@@ -222,7 +224,7 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
     float last_frame_time = seconds_now();
     float fix_frame_time = 1.0f / 60.0f;
 
-    while (hMsg.message != WM_QUIT)
+    while (!GlobalExit)
     {
         current_frame_time = seconds_now();
         float dt = current_frame_time - last_frame_time;

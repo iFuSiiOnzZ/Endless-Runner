@@ -1,5 +1,9 @@
 #pragma once
 
+#include "..\..\engine\stb_image.h"
+#include "..\..\engine\graphics.h"
+#include "..\..\engine\macros.h"
+
 struct CContentLoader
 {
     static void Load()
@@ -33,12 +37,16 @@ struct CContentLoader
         ///////////////////////////////////////////////////////////////////////
 
         bmp = resource_manager->Remove<bitmap_t>("tree");
+        ASSERT(bmp != nullptr, "resource not fount");
+
         stbi_image_free(bmp->Memory);
         delete bmp;
 
         ///////////////////////////////////////////////////////////////////////
 
         bmp = resource_manager->Remove<bitmap_t>("sun");
+        ASSERT(bmp != nullptr, "resource not fount");
+
         stbi_image_free(bmp->Memory);
         delete bmp;
     }

@@ -162,8 +162,9 @@
   <ItemGroup>
     <ClInclude Include="SourceCode\engine\animation.h" />
     <ClInclude Include="SourceCode\engine\graphics.h" />
+    <ClInclude Include="SourceCode\engine\macros.h" />
     <ClInclude Include="SourceCode\engine\stb_image.h" />
-    <ClInclude Include="SourceCode\engine\ResourceManager.h" />
+    <ClInclude Include="SourceCode\engine\resource_manager.h" />
     <ClInclude Include="SourceCode\engine\Singleton.h" />
     <ClInclude Include="SourceCode\game\utils\ContentLoader.h" />
   </ItemGroup>
