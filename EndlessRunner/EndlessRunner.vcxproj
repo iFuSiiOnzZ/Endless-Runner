@@ -163,8 +163,9 @@
     <ClInclude Include="SourceCode\engine\animation.h" />
     <ClInclude Include="SourceCode\engine\graphics.h" />
     <ClInclude Include="SourceCode\engine\stb_image.h" />
-    <ClInclude Include="SourceCode\game\Utils\ResourceManager.h" />
-    <ClInclude Include="SourceCode\game\Utils\Singleton.h" />
+    <ClInclude Include="SourceCode\engine\ResourceManager.h" />
+    <ClInclude Include="SourceCode\engine\Singleton.h" />
+    <ClInclude Include="SourceCode\game\utils\ContentLoader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

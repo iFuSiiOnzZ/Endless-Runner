@@ -6,7 +6,9 @@
 #include "engine\animation.h"
 #include "engine\stb_image.h"
 
-#include "game\Utils\ResourceManager.h"
+#include "engine\ResourceManager.h"
+
+#include "game\utils\ContentLoader.h"
 
 /*
     Libs include
@@ -195,25 +197,11 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
     HDC DeviceContext = GetDC(hWnd);
     MSG hMsg = { 0 };
 
-    bitmap_t bmp_tree = { 0 };
-    bitmap_t bmp_sun = { 0 };
-
-    bmp_tree.Memory = stbi_load("..\\assets\\tree2.png", &bmp_tree.Width, &bmp_tree.Height, &bmp_tree.BytesPerPixel, 0);
-    bmp_tree.Pitch = bmp_tree.Width * bmp_tree.BytesPerPixel;
-
-    bmp_sun.Memory = stbi_load("..\\assets\\sun.png", &bmp_sun.Width, &bmp_sun.Height, &bmp_sun.BytesPerPixel, 0);
-    bmp_sun.Pitch = bmp_sun.Width * bmp_sun.BytesPerPixel;
-
     std::vector<animation_frame_t> frames;
     animation_frame_t frame = { 0 };
 
     CResourceManager *r = CResourceManager::GetInstance();
-    r->Register<bitmap_t>();
-    r->Add<bitmap_t>("tree", &bmp_tree);
-    r->Add<bitmap_t>("sun", &bmp_sun);
-
-    bitmap_t *t = r->Get<bitmap_t>("tree");
-    bitmap_t *e = r->Get<bitmap_t>("treeeee");
+    CContentLoader::Load();
 
     for (int i = 0; i < 5; ++i)
     {
@@ -264,8 +252,8 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
 
         CGraphicsManager::ClearBuffer(&GameBuffer, 0.0f, 0.0f, 0.0f);
 
-        CGraphicsManager::DrawBitmap(&GameBuffer, &bmp_tree, 100.0f, 100.0f);
-        CGraphicsManager::DrawBitmap(&GameBuffer, &bmp_sun, 700.0f, 0.0f);
+        CGraphicsManager::DrawBitmap(&GameBuffer, r->Get<bitmap_t>("tree"), 100.0f, 100.0f);
+        CGraphicsManager::DrawBitmap(&GameBuffer, r->Get<bitmap_t>("sun"), 700.0f, 0.0f);
 
         player_animation.Render(&graphics_manager, &GameBuffer, 700.0f, 200.0f);
 
@@ -273,13 +261,15 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
         last_frame_time = current_frame_time;
     }
 
-    stbi_image_free(bmp_tree.Memory);
-    stbi_image_free(bmp_sun.Memory);
-
     for (size_t i = 0; i < frames.size(); ++i) stbi_image_free(frames[i].bitmap.Memory);
     frames.clear();
 
+
+
+    CContentLoader::UnLoad();
     CResourceManager::Destroy();
+
+
     UnregisterClassA(CLASS_NAME, wndCls.hInstance);
     return EXIT_SUCCESS;
 }

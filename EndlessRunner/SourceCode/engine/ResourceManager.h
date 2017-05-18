@@ -52,4 +52,18 @@ class CResourceManager : public CSingleton<CResourceManager>
 
             return (T *)itb->second;
         }
+
+        template <class T> T * Remove(const std::string &id)
+        {
+            TRepository::iterator itr = m_Repository.find(typeid(T).hash_code());
+            if (itr == m_Repository.end()) return nullptr;
+
+            TBranch::iterator itb = itr->second.find(id);
+            if (itb == itr->second.end()) return nullptr;
+
+            T *r = (T *)itb->second;
+            itr->second.erase(itb);
+
+            return r;
+        }
 };
