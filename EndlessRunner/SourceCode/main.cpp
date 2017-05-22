@@ -9,6 +9,7 @@
 #include "engine\resource_manager.h"
 
 #include "game\utils\ContentLoader.h"
+#include "game\environment\ground.h"
 
 /*
     Libs include
@@ -219,6 +220,7 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
 
     CGraphicsManager graphics_manager;
     CAnimation player_animation(frames);
+    CGround ground(0, 500);
 
     float current_frame_time = 0.0f;
     float last_frame_time = seconds_now();
@@ -238,7 +240,10 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
         while (dt > 0.0f)
         {
             float delta_time = (dt < fix_frame_time) ? dt : fix_frame_time;
+
             player_animation.Update(delta_time);
+            ground.Update(dt);
+
             dt -= fix_frame_time;
         }
 
@@ -258,6 +263,7 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
         CGraphicsManager::DrawBitmap(&GameBuffer, r->Get<bitmap_t>("sun"), 700.0f, 0.0f);
 
         player_animation.Render(&graphics_manager, &GameBuffer, 700.0f, 200.0f);
+        ground.Render(&graphics_manager, &GameBuffer);
 
         DisplayBuffer(&GlobalBackBuffer, DeviceContext, WndDimensions.Width, WndDimensions.Height);
         last_frame_time = current_frame_time;

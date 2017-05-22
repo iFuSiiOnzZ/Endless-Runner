@@ -27,6 +27,9 @@
     <ClCompile Include="SourceCode\engine\animation.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="SourceCode\game\environment\ground.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SourceCode\engine\graphics.h">
@@ -48,6 +51,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SourceCode\engine\resource_manager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="SourceCode\game\environment\ground.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

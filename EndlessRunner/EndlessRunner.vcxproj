@@ -157,6 +157,7 @@
     <ClCompile Include="SourceCode\engine\animation.cpp" />
     <ClCompile Include="SourceCode\engine\graphics.cpp" />
     <ClCompile Include="SourceCode\engine\stb_image.cpp" />
+    <ClCompile Include="SourceCode\game\environment\ground.cpp" />
     <ClCompile Include="SourceCode\main.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -166,6 +167,7 @@
     <ClInclude Include="SourceCode\engine\stb_image.h" />
     <ClInclude Include="SourceCode\engine\resource_manager.h" />
     <ClInclude Include="SourceCode\engine\Singleton.h" />
+    <ClInclude Include="SourceCode\game\environment\ground.h" />
     <ClInclude Include="SourceCode\game\utils\ContentLoader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
