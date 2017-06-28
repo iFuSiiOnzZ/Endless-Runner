@@ -3,8 +3,9 @@
     Project includes
 */
 
-#include "engine\animation.h"
+#include "engine\font.h"
 
+#include "engine\animation.h"
 
 #include "engine\resource_manager.h"
 
@@ -200,27 +201,12 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
     HDC DeviceContext = GetDC(hWnd);
     MSG hMsg = { 0 };
 
-    std::vector<animation_frame_t> frames;
-    animation_frame_t frame = { 0 };
-
     CResourceManager *r = CResourceManager::GetInstance();
     CContentLoader::Load();
 
-    for (int i = 0; i < 5; ++i)
-    {
-        char s[256] = { 0 };
-        sprintf_s(s, "..\\assets\\run_anim%d.png", i + 1);
-
-        frame.bitmap.Memory = (stbi_load(s, &frame.bitmap.Width, &frame.bitmap.Height, &frame.bitmap.BytesPerPixel, 0));
-        frame.bitmap.Pitch = frame.bitmap.Width * frame.bitmap.BytesPerPixel;
-        frame.duration = 0.12f;
-
-        frames.push_back(frame);
-    }
-
     CGraphicsManager graphics_manager;
-    CAnimation player_animation(frames);
-    CGround ground(0, 500);
+    CGround ground(0, WINDOW_HEIGHT - 93, 1920);
+    CFont Font("C:/Windows/Fonts/arialbd.ttf", 100.0f);
 
     float current_frame_time = 0.0f;
     float last_frame_time = seconds_now();
@@ -241,7 +227,6 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
         {
             float delta_time = (dt < fix_frame_time) ? dt : fix_frame_time;
 
-            player_animation.Update(delta_time);
             ground.Update(dt);
 
             dt -= fix_frame_time;
@@ -262,21 +247,14 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
         CGraphicsManager::DrawBitmap(&GameBuffer, r->Get<bitmap_t>("tree"), 100.0f, 100.0f);
         CGraphicsManager::DrawBitmap(&GameBuffer, r->Get<bitmap_t>("sun"), 700.0f, 0.0f);
 
-        player_animation.Render(&graphics_manager, &GameBuffer, 700.0f, 200.0f);
         ground.Render(&graphics_manager, &GameBuffer);
 
         DisplayBuffer(&GlobalBackBuffer, DeviceContext, WndDimensions.Width, WndDimensions.Height);
         last_frame_time = current_frame_time;
     }
 
-    for (size_t i = 0; i < frames.size(); ++i) stbi_image_free(frames[i].bitmap.Memory);
-    frames.clear();
-
-
-
     CContentLoader::UnLoad();
     CResourceManager::Destroy();
-
 
     UnregisterClassA(CLASS_NAME, wndCls.hInstance);
     return EXIT_SUCCESS;

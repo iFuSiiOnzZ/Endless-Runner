@@ -155,6 +155,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="SourceCode\engine\animation.cpp" />
+    <ClCompile Include="SourceCode\engine\font.cpp" />
     <ClCompile Include="SourceCode\engine\graphics.cpp" />
     <ClCompile Include="SourceCode\engine\stb_image.cpp" />
     <ClCompile Include="SourceCode\game\environment\ground.cpp" />
@@ -162,11 +163,14 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="SourceCode\engine\animation.h" />
+    <ClInclude Include="SourceCode\engine\font.h" />
     <ClInclude Include="SourceCode\engine\graphics.h" />
     <ClInclude Include="SourceCode\engine\macros.h" />
     <ClInclude Include="SourceCode\engine\stb_image.h" />
     <ClInclude Include="SourceCode\engine\resource_manager.h" />
     <ClInclude Include="SourceCode\engine\Singleton.h" />
+    <ClInclude Include="SourceCode\engine\stb_truetype.h" />
+    <ClInclude Include="SourceCode\engine\utils.h" />
     <ClInclude Include="SourceCode\game\environment\ground.h" />
     <ClInclude Include="SourceCode\game\utils\ContentLoader.h" />
   </ItemGroup>
