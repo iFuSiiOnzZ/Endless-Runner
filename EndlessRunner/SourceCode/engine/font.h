@@ -22,9 +22,11 @@ typedef struct true_type_t
 class CFont
 {
     private:
-        true_type_t m_Chars;
+        true_type_t m_Font;
     public:
 
         CFont(const std::string &FontName, float FontSize);
         ~CFont();
+
+        unsigned int DrawString(CGraphicsManager *GraphicsManager, game_offscreen_buffer_t *Buffer, char *Text, int x, int y, float r = 1.0f, float g = 1.0f, float b = 1.0f);
 };

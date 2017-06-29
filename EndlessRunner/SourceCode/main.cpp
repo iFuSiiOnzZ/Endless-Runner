@@ -206,7 +206,7 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
 
     CGraphicsManager graphics_manager;
     CGround ground(0, WINDOW_HEIGHT - 93, 1920);
-    CFont Font("C:/Windows/Fonts/arialbd.ttf", 100.0f);
+    CFont Font("C:/Windows/Fonts/arialbd.ttf", 30.0f);
 
     float current_frame_time = 0.0f;
     float last_frame_time = seconds_now();
@@ -248,6 +248,8 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
         CGraphicsManager::DrawBitmap(&GameBuffer, r->Get<bitmap_t>("sun"), 700.0f, 0.0f);
 
         ground.Render(&graphics_manager, &GameBuffer);
+        unsigned int y = Font.DrawString(&graphics_manager, &GameBuffer, "Hello World", 10, 10);
+        y = Font.DrawString(&graphics_manager, &GameBuffer, "This is a test", 10, y);
 
         DisplayBuffer(&GlobalBackBuffer, DeviceContext, WndDimensions.Width, WndDimensions.Height);
         last_frame_time = current_frame_time;
