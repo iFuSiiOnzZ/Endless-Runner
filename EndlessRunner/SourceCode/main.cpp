@@ -217,6 +217,19 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
         current_frame_time = seconds_now();
         float dt = current_frame_time - last_frame_time;
 
+        window_dimensions_t WndDimensions = GetWindowDimension(hWnd);
+        game_offscreen_buffer_t GameBuffer = { 0 };
+
+        GameBuffer.Memory = GlobalBackBuffer.Memory;
+        GameBuffer.BytesPerPixel = GlobalBackBuffer.BytesPerPixel;
+
+        GameBuffer.Height = GlobalBackBuffer.Height;
+        GameBuffer.Width = GlobalBackBuffer.Width;
+        GameBuffer.Pitch = GlobalBackBuffer.Pitch;
+
+        CGraphicsManager::ClearBuffer(&GameBuffer, 0.0f, 0.0f, 0.0f);
+        unsigned int y = Font.DrawString(&graphics_manager, &GameBuffer, 10, 10, 1.0f, 1.0f, 1.0f, "Frame time: %.3fs", dt);
+
         while (PeekMessage(&hMsg, NULL, 0U, 0U, PM_REMOVE) > 0)
         {
             TranslateMessage(&hMsg);
@@ -232,24 +245,13 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
             dt -= fix_frame_time;
         }
 
-        window_dimensions_t WndDimensions = GetWindowDimension(hWnd);
-        game_offscreen_buffer_t GameBuffer = { 0 };
-
-        GameBuffer.Memory = GlobalBackBuffer.Memory;
-        GameBuffer.BytesPerPixel = GlobalBackBuffer.BytesPerPixel;
-
-        GameBuffer.Height= GlobalBackBuffer.Height;
-        GameBuffer.Width = GlobalBackBuffer.Width;
-        GameBuffer.Pitch = GlobalBackBuffer.Pitch;
-
-        CGraphicsManager::ClearBuffer(&GameBuffer, 0.0f, 0.0f, 0.0f);
 
         CGraphicsManager::DrawBitmap(&GameBuffer, r->Get<bitmap_t>("tree"), 100.0f, 100.0f);
         CGraphicsManager::DrawBitmap(&GameBuffer, r->Get<bitmap_t>("sun"), 700.0f, 0.0f);
 
         ground.Render(&graphics_manager, &GameBuffer);
-        unsigned int y = Font.DrawString(&graphics_manager, &GameBuffer, "Hello World", 10, 10);
-        y = Font.DrawString(&graphics_manager, &GameBuffer, "This is a test", 10, y);
+        y = Font.DrawString(&graphics_manager, &GameBuffer, 10, y, 1.0f, 1.0f, 1.0f, "Hello World");
+        y = Font.DrawString(&graphics_manager, &GameBuffer, 10, y, 1.0f, 1.0f, 1.0f, "This is a test");
 
         DisplayBuffer(&GlobalBackBuffer, DeviceContext, WndDimensions.Width, WndDimensions.Height);
         last_frame_time = current_frame_time;

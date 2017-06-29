@@ -4,6 +4,8 @@
 #define STB_TRUETYPE_IMPLEMENTATION
 #include "stb_truetype.h"
 
+#include <stdarg.h>
+
 CFont::CFont(const std::string & FontName, float FontSize)
 {
     int Ascent = 0;
@@ -72,14 +74,18 @@ CFont::~CFont()
     memset(&m_Font, 0, sizeof(true_type_t));
 }
 
-unsigned int CFont::DrawString(CGraphicsManager *GraphicsManager, game_offscreen_buffer_t *Buffer, char * Text, int x, int y, float r, float g, float b)
+unsigned int CFont::DrawString(CGraphicsManager *GraphicsManager, game_offscreen_buffer_t *Buffer, int x, int y, float r, float g, float b, char *Format, ...)
 {
-    int MaxLineHeight = 0;
-    int NewLineHeight = 0;
-
+    int MaxLineHeight = 0, NewLineHeight = 0;
     int CarretPos = x;
 
-    for (char *c = Text; *c != '\0'; ++c)
+    va_list args;
+    char AuxText[1024 * 8]; // NOTE(Andrei): Not to sure about the size
+
+    va_start(args, Format);
+    vsnprintf(AuxText, 1024 * 8, Format, args);
+
+    for (char *c = AuxText; *c != '\0'; ++c)
     {
         ascii_chars_t *Char = &m_Font.Char[*c];
         int ChartStartAt = 0;

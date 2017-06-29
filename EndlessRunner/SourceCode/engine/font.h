@@ -28,5 +28,5 @@ class CFont
         CFont(const std::string &FontName, float FontSize);
         ~CFont();
 
-        unsigned int DrawString(CGraphicsManager *GraphicsManager, game_offscreen_buffer_t *Buffer, char *Text, int x, int y, float r = 1.0f, float g = 1.0f, float b = 1.0f);
+        unsigned int DrawString(CGraphicsManager *GraphicsManager, game_offscreen_buffer_t *Buffer, int x, int y, float r, float g, float b, char *Format, ...);
 };
