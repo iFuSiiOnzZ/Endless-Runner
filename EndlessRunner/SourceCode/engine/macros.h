@@ -1,7 +1,11 @@
 #pragma once
 
 #ifndef ASSERT
-    #define ASSERT(x, msg) do{ if(!(x)){ *(int *) 0 = 0; } }while(0);
+    #if _DEBUG
+        #define ASSERT(x, msg) do{ if(!(x)){ *(int *) 0 = 0; } }while(0);
+    #else
+        #define ASSERT(x, msg)
+    #endif
 #endif
 
 #ifndef ARRAY_COUNT
