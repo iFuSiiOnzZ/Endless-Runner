@@ -158,6 +158,7 @@
     <ClCompile Include="SourceCode\engine\font.cpp" />
     <ClCompile Include="SourceCode\engine\graphics.cpp" />
     <ClCompile Include="SourceCode\engine\stb_image.cpp" />
+    <ClCompile Include="SourceCode\game\enemies\Slim.cpp" />
     <ClCompile Include="SourceCode\game\environment\ground.cpp" />
     <ClCompile Include="SourceCode\main.cpp" />
   </ItemGroup>
@@ -166,12 +167,16 @@
     <ClInclude Include="SourceCode\engine\font.h" />
     <ClInclude Include="SourceCode\engine\graphics.h" />
     <ClInclude Include="SourceCode\engine\macros.h" />
+    <ClInclude Include="SourceCode\engine\math.h" />
     <ClInclude Include="SourceCode\engine\stb_image.h" />
     <ClInclude Include="SourceCode\engine\resource_manager.h" />
     <ClInclude Include="SourceCode\engine\Singleton.h" />
     <ClInclude Include="SourceCode\engine\stb_truetype.h" />
     <ClInclude Include="SourceCode\engine\utils.h" />
+    <ClInclude Include="SourceCode\game\enemies\enemy.h" />
+    <ClInclude Include="SourceCode\game\enemies\Slim.h" />
     <ClInclude Include="SourceCode\game\environment\ground.h" />
+    <ClInclude Include="SourceCode\game\GameObject.h" />
     <ClInclude Include="SourceCode\game\utils\ContentLoader.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
