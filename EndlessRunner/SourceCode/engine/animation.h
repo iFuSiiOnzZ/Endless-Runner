@@ -20,8 +20,11 @@ class CAnimation
         float m_TotalTime;
 
     public:
-        CAnimation(const std::vector<animation_frame_t> &Frames);
+        CAnimation();
         ~CAnimation();
+
+        CAnimation(const std::vector<animation_frame_t> &Frames);
+        void SetFrames(const std::vector<animation_frame_t> &Frames);
 
         void Update(float dt);
         void Render(CGraphicsManager *GraphicsManager, game_offscreen_buffer_t * Buffer, float x, float y);

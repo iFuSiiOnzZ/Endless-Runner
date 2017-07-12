@@ -12,6 +12,12 @@ CAnimation::CAnimation(const std::vector<animation_frame_t> &Frames) : m_Current
     }
 }
 
+CAnimation::CAnimation()
+{
+    m_CurrentIndex = 0;
+    m_CurrentTime = m_TotalTime = 0.0f;
+}
+
 CAnimation::~CAnimation()
 {
     m_FrameEndTime.clear();
@@ -20,6 +26,21 @@ CAnimation::~CAnimation()
     m_CurrentIndex = 0;
     m_CurrentTime = 0.0f;
     m_TotalTime = 0.0f;
+}
+
+void CAnimation::SetFrames(const std::vector<animation_frame_t>& Frames)
+{
+    m_CurrentIndex = 0;
+    m_CurrentTime = m_TotalTime = 0.0f;
+
+    m_Frames = Frames;
+    m_FrameEndTime.resize(m_Frames.size());
+
+    for (size_t i = 0; i < m_Frames.size(); ++i)
+    {
+        m_TotalTime += m_Frames[i].duration;
+        m_FrameEndTime[i] = m_TotalTime;
+    }
 }
 
 void CAnimation::Update(float dt)

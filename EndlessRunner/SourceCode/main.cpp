@@ -12,6 +12,8 @@
 #include "game\utils\ContentLoader.h"
 #include "game\environment\ground.h"
 
+#include "game\enemies\Slim.h"
+
 /*
     Libs include
 */
@@ -212,6 +214,8 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
     float last_frame_time = seconds_now();
     float fix_frame_time = 1.0f / 60.0f;
 
+    CSlim Slim;
+
     while (!GlobalExit)
     {
         current_frame_time = seconds_now();
@@ -241,6 +245,7 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
             float delta_time = (dt < fix_frame_time) ? dt : fix_frame_time;
 
             ground.Update(dt);
+            Slim.Update(dt);
 
             dt -= fix_frame_time;
         }
@@ -250,6 +255,8 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
         CGraphicsManager::DrawBitmap(&GameBuffer, r->Get<bitmap_t>("sun"), 700.0f, 0.0f);
 
         ground.Render(&graphics_manager, &GameBuffer);
+        Slim.Render(&graphics_manager, &GameBuffer);
+
         y = Font.DrawString(&graphics_manager, &GameBuffer, 10, y, 1.0f, 1.0f, 1.0f, "Hello World");
         y = Font.DrawString(&graphics_manager, &GameBuffer, 10, y, 1.0f, 1.0f, 1.0f, "This is a test");
 

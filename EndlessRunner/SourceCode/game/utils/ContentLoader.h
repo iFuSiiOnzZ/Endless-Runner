@@ -69,6 +69,36 @@ struct CContentLoader
         if (bmp->BytesPerPixel == 3) from3To4BPX(bmp);
         bmp->Pitch = bmp->Width * bmp->BytesPerPixel;
         bgr2rgb(bmp);
+
+        ///////////////////////////////////////////////////////////////////////
+
+        bmp = new bitmap_t;
+        resource_manager->Add<bitmap_t>("slimeWalk1", bmp);
+
+        bmp->Memory = stbi_load("..\\assets\\slimeWalk1.png", &bmp->Width, &bmp->Height, &bmp->BytesPerPixel, 0);
+        if (bmp->BytesPerPixel == 3) from3To4BPX(bmp);
+        bmp->Pitch = bmp->Width * bmp->BytesPerPixel;
+        bgr2rgb(bmp);
+
+        ///////////////////////////////////////////////////////////////////////
+
+        bmp = new bitmap_t;
+        resource_manager->Add<bitmap_t>("slimeWalk2", bmp);
+
+        bmp->Memory = stbi_load("..\\assets\\slimeWalk2.png", &bmp->Width, &bmp->Height, &bmp->BytesPerPixel, 0);
+        if (bmp->BytesPerPixel == 3) from3To4BPX(bmp);
+        bmp->Pitch = bmp->Width * bmp->BytesPerPixel;
+        bgr2rgb(bmp);
+
+        ///////////////////////////////////////////////////////////////////////
+
+        bmp = new bitmap_t;
+        resource_manager->Add<bitmap_t>("slimeDead", bmp);
+
+        bmp->Memory = stbi_load("..\\assets\\slimeDead.png", &bmp->Width, &bmp->Height, &bmp->BytesPerPixel, 0);
+        if (bmp->BytesPerPixel == 3) from3To4BPX(bmp);
+        bmp->Pitch = bmp->Width * bmp->BytesPerPixel;
+        bgr2rgb(bmp);
     }
 
     static void UnLoad()
@@ -95,6 +125,30 @@ struct CContentLoader
         ///////////////////////////////////////////////////////////////////////
 
         bmp = resource_manager->Remove<bitmap_t>("grass");
+        ASSERT(bmp != nullptr, "resource not fount");
+
+        stbi_image_free(bmp->Memory);
+        delete bmp;
+
+        ///////////////////////////////////////////////////////////////////////
+
+        bmp = resource_manager->Remove<bitmap_t>("slimeWalk1");
+        ASSERT(bmp != nullptr, "resource not fount");
+
+        stbi_image_free(bmp->Memory);
+        delete bmp;
+
+        ///////////////////////////////////////////////////////////////////////
+
+        bmp = resource_manager->Remove<bitmap_t>("slimeWalk2");
+        ASSERT(bmp != nullptr, "resource not fount");
+
+        stbi_image_free(bmp->Memory);
+        delete bmp;
+
+        ///////////////////////////////////////////////////////////////////////
+
+        bmp = resource_manager->Remove<bitmap_t>("slimeDead");
         ASSERT(bmp != nullptr, "resource not fount");
 
         stbi_image_free(bmp->Memory);
