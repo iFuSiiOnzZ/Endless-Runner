@@ -7,14 +7,18 @@ class CSlim : public CEnemy
 {
     private:
         CAnimation m_SlimAnimation;
+        bitmap_t *m_SlimDead;
+
+        bool m_IsAlive;
+        Rect2d m_Rect;
 
     public:
         CSlim();
         ~CSlim();
 
         void Update(float dt);
-        void Render(CGraphicsManager * GraphicsRender, game_offscreen_buffer_t * Bufffer) ;
+        void Render(CGraphicsManager * GraphicsRender, game_offscreen_buffer_t * Buffer) ;
 
-        rect2d GetRectable();
-        bool Collision(rect2d CollisionRect);
+        Rect2d GetRectable();
+        bool Collision(const Rect2d & CollisionRect);
 };

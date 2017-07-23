@@ -28,4 +28,6 @@ class CAnimation
 
         void Update(float dt);
         void Render(CGraphicsManager *GraphicsManager, game_offscreen_buffer_t * Buffer, float x, float y);
+
+        animation_frame_t GetCurrentFrame();
 };

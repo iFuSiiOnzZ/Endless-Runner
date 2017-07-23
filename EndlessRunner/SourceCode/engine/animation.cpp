@@ -1,4 +1,5 @@
 #include "animation.h"
+#include "macros.h"
 
 CAnimation::CAnimation(const std::vector<animation_frame_t> &Frames) : m_CurrentIndex(0), m_CurrentTime(0.0f), m_TotalTime(0.0f)
 {
@@ -61,5 +62,12 @@ void CAnimation::Update(float dt)
 
 void CAnimation::Render(CGraphicsManager * GraphicsManager,  game_offscreen_buffer_t * Buffer, float x, float y)
 {
+    ASSERT(m_CurrentIndex < m_Frames.size(), "Frame index out of boundaries");
     GraphicsManager->DrawBitmap(Buffer, &m_Frames[m_CurrentIndex].bitmap, x, y);
+}
+
+animation_frame_t CAnimation::GetCurrentFrame()
+{
+    ASSERT(m_CurrentIndex < m_Frames.size(), "Frame index out of boundaries");
+    return m_Frames[m_CurrentIndex];
 }

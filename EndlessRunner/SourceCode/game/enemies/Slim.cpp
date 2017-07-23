@@ -21,13 +21,17 @@ CSlim::CSlim()
     frame.bitmap = *bmp; frame.duration = 0.36f;
     frames.push_back(frame);
 
-    /*bmp = resource_manager->Get<bitmap_t>("slimeDead");
+    m_SlimDead = resource_manager->Get<bitmap_t>("slimeDead");
     ASSERT(bmp != nullptr, "resource not found");
 
-    frame.bitmap = *bmp; frame.duration = 0.16f;
-    frames.push_back(frame);*/
-
     m_SlimAnimation.SetFrames(frames);
+    m_IsAlive = true;
+
+    m_Rect.position.x = 0.0f;
+    m_Rect.position.y = 0.0f;
+
+    m_Rect.size.x = 0.0f;
+    m_Rect.size.y = 0.0f;
 }
 
 CSlim::~CSlim()
@@ -36,20 +40,51 @@ CSlim::~CSlim()
 
 void CSlim::Update(float dt)
 {
-    m_SlimAnimation.Update(dt);
+    if (m_IsAlive)
+    {
+        m_SlimAnimation.Update(dt);
+        animation_frame_t frame = m_SlimAnimation.GetCurrentFrame();
+
+        m_Rect.position.x = (float) frame.bitmap.Width;
+        m_Rect.position.y = (float) frame.bitmap.Height;
+    }
+    else
+    {
+        m_Rect.position.x = (float) m_SlimDead->Width;
+        m_Rect.position.y = (float) m_SlimDead->Height;
+    }
 }
 
-void CSlim::Render(CGraphicsManager * GraphicsRender, game_offscreen_buffer_t * Bufffer)
+void CSlim::Render(CGraphicsManager * GraphicsRender, game_offscreen_buffer_t * Buffer)
 {
-    m_SlimAnimation.Render(GraphicsRender, Bufffer, 300.0f, 200.0f);
+    if(m_IsAlive) m_SlimAnimation.Render(GraphicsRender, Buffer, 300.0f, 200.0f);
+    else GraphicsRender->DrawBitmap(Buffer, m_SlimDead, 300.0f, 200.0f);
 }
 
-rect2d CSlim::GetRectable()
+Rect2d CSlim::GetRectable()
 {
-    return rect2d();
+    return Rect2d();
 }
 
-bool CSlim::Collision(rect2d CollisionRect)
+bool CSlim::Collision(const Rect2d & CollisionRect)
 {
-    return false;
+    Vec2f Boundaries =
+    {
+        CollisionRect.size.x + m_Rect.size.x,
+        CollisionRect.size.y + m_Rect.size.y
+    };
+
+    Vec2f MyPos =
+    {
+        m_Rect.position.x + m_Rect.size.x * 0.5f,
+        m_Rect.position.y + m_Rect.size.y * 0.5f
+    };
+
+    if (MyPos.x < CollisionRect.position.x || MyPos.x > Boundaries.x || MyPos.y < CollisionRect.position.x || MyPos.y > Boundaries.y) 
+    {
+        return false;
+    }
+
+    m_IsAlive = false;
+    return true;
 }
