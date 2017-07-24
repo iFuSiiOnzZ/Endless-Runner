@@ -10,26 +10,37 @@ typedef enum EnemyType_t
 
 class CEnemy : public IGameObject
 {
-    private:
+    protected:
         EnemyType_t m_EnemyType;
+        bool m_IsAlive;
+
+        Vec2f m_Velocity, m_Position;
+        Rect2d m_Rect;
 
     public:
         CEnemy()
         {
             m_EnemyType = Slim;
+            m_IsAlive = true;
         }
 
         CEnemy(EnemyType_t EnemieType)
         {
             m_EnemyType = EnemieType;
+            m_IsAlive = true;
         }
 
-        void SetEnemies(EnemyType_t EnemieType)
+        inline bool IsAlive()
+        {
+            return m_IsAlive;
+        }
+
+        inline void SetEnemies(EnemyType_t EnemieType)
         {
             m_EnemyType = EnemieType;
         }
 
-        EnemyType_t GetEnemieType()
+        inline EnemyType_t GetEnemieType()
         {
             return m_EnemyType;
         }

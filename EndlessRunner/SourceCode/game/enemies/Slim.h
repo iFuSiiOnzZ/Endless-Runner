@@ -9,11 +9,8 @@ class CSlim : public CEnemy
         CAnimation m_SlimAnimation;
         bitmap_t *m_SlimDead;
 
-        bool m_IsAlive;
-        Rect2d m_Rect;
-
     public:
-        CSlim();
+        CSlim(float x = 0.0f, float y = 0.0f);
         ~CSlim();
 
         void Update(float dt);

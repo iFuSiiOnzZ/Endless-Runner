@@ -211,10 +211,10 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
     CFont Font("C:/Windows/Fonts/arialbd.ttf", 30.0f);
 
     float current_frame_time = 0.0f;
-    float last_frame_time = seconds_now();
     float fix_frame_time = 1.0f / 60.0f;
+    float last_frame_time = seconds_now();
 
-    CSlim Slim;
+    CSlim Slim(WINDOW_WIDTH - 200, 100.0f);
 
     while (!GlobalExit)
     {
