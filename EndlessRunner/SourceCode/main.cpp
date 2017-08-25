@@ -218,6 +218,12 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
 
     while (!GlobalExit)
     {
+        while (PeekMessage(&hMsg, NULL, 0U, 0U, PM_REMOVE) > 0)
+        {
+            TranslateMessage(&hMsg);
+            DispatchMessageA(&hMsg);
+        }
+
         current_frame_time = seconds_now();
         float dt = current_frame_time - last_frame_time;
 
@@ -233,12 +239,6 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
 
         CGraphicsManager::ClearBuffer(&GameBuffer, 0.0f, 0.0f, 0.0f);
         unsigned int y = Font.DrawString(&graphics_manager, &GameBuffer, 10, 10, 1.0f, 1.0f, 1.0f, "Frame time: %.3fs", dt);
-
-        while (PeekMessage(&hMsg, NULL, 0U, 0U, PM_REMOVE) > 0)
-        {
-            TranslateMessage(&hMsg);
-            DispatchMessageA(&hMsg);
-        }
 
         while (dt > 0.0f)
         {
