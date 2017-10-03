@@ -141,5 +141,5 @@ unsigned int CFont::DrawString(CGraphicsManager *GraphicsManager, game_offscreen
         }
     }
 
-    return y + NewLineHeight + (MaxLineHeight + m_Font.LineSpace);
+    return NewLineHeight + (MaxLineHeight + m_Font.LineSpace);
 }

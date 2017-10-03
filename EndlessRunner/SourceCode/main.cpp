@@ -238,7 +238,7 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
         GameBuffer.Pitch = GlobalBackBuffer.Pitch;
 
         CGraphicsManager::ClearBuffer(&GameBuffer, 0.0f, 0.0f, 0.0f);
-        unsigned int y = Font.DrawString(&graphics_manager, &GameBuffer, 10, 10, 1.0f, 1.0f, 1.0f, "Frame time: %.3fs", dt);
+        unsigned int y = Font.DrawString(&graphics_manager, &GameBuffer, 10, 10, 1.0f, 1.0f, 1.0f, "Frame time: %.3fs", dt) + 10;
 
         while (dt > 0.0f)
         {
@@ -257,8 +257,8 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
         ground.Render(&graphics_manager, &GameBuffer);
         Slim.Render(&graphics_manager, &GameBuffer);
 
-        y = Font.DrawString(&graphics_manager, &GameBuffer, 10, y, 1.0f, 1.0f, 1.0f, "Hello World");
-        y = Font.DrawString(&graphics_manager, &GameBuffer, 10, y, 1.0f, 1.0f, 1.0f, "This is a test");
+        y += Font.DrawString(&graphics_manager, &GameBuffer, 10, y, 1.0f, 1.0f, 1.0f, "Hello World");
+        y += Font.DrawString(&graphics_manager, &GameBuffer, 10, y, 1.0f, 1.0f, 1.0f, "This is a test");
 
         DisplayBuffer(&GlobalBackBuffer, DeviceContext, WndDimensions.Width, WndDimensions.Height);
         last_frame_time = current_frame_time;
