@@ -207,7 +207,7 @@ int WINAPI WinMain(HINSTANCE hActualInst, HINSTANCE hPrevInst, LPSTR cmdLine, in
     CContentLoader::Load();
 
     CGraphicsManager graphics_manager;
-    CGround ground(0, WINDOW_HEIGHT - 93, 1920);
+    CGround ground(0, WINDOW_HEIGHT - 93);
     CFont Font("C:/Windows/Fonts/arialbd.ttf", 30.0f);
 
     float current_frame_time = 0.0f;
